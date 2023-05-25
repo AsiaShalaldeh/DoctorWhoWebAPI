@@ -1,3 +1,7 @@
+using DoctorWho.DB.Models;
+using DoctorWho.Web.Controllers;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<DoctorWhoCoreDbContext>();
+builder.Services.AddScoped<DoctorWho.DB.Repositories.DoctorRepository>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 
 var app = builder.Build();
 
