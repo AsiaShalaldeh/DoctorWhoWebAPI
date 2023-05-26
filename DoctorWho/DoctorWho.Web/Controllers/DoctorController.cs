@@ -40,7 +40,7 @@ namespace DoctorWho.Web.Controllers
         {
             try
             {
-                // Validate the doctorDto using FluentValidation rules
+                // Validate the DoctorsWithoutEpisodes using FluentValidation rules
                 DoctorValidator validator = new DoctorValidator();
                 validator.ValidateAndThrow(doctor);
 
@@ -58,6 +58,26 @@ namespace DoctorWho.Web.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteDoctor(int id)
+        {
+            try
+            {
+                // Delete the doctor with the specified id
+                var deletedDoctor = _doctorRepository.DeleteDoctor(id);
+                if (deletedDoctor == null)
+                {
+                    return NotFound(); // Doctor not found
+                }
+
+                return NoContent(); // Successfully deleted
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while deleting the doctor."); // Return a server error response
             }
         }
     }
