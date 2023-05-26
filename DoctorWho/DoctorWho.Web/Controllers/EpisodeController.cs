@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using DoctorWho.DB.Models;
 using DoctorWho.DB.ModelsDto;
 using DoctorWho.DB.Repositories;
+using DoctorWho.Web.Validation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DoctorWho.Web.Controllers
@@ -31,6 +33,25 @@ namespace DoctorWho.Web.Controllers
             {
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
+        }
+
+        [HttpPost]
+        public IActionResult CreateEpisode([FromBody] EpisodesDto episodeDto)
+        {
+            // Validate the episode entity
+            var validator = new EpisodeValidator();
+            var validationResult = validator.Validate(episodeDto);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
+
+            var episode = _mapper.Map<Episode>(episodeDto);
+
+            // Create the episode and get the new entity ID
+            var newEpisodeId = _episodeRepository.CreateEpisode(episode);
+
+            return Ok(newEpisodeId);
         }
     }
 }
