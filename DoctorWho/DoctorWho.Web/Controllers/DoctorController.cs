@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using DoctorWho.DB.Models;
 using DoctorWho.DB.ModelsDto;
 using DoctorWho.DB.Repositories;
+using DoctorWho.Web.Validation;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DoctorWho.Web.Controllers
@@ -32,6 +35,30 @@ namespace DoctorWho.Web.Controllers
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+        [HttpPost("upsert")]
+        public ActionResult<Doctor> UpsertDoctor(DoctorsWithoutEpisodes doctor)
+        {
+            try
+            {
+                // Validate the doctorDto using FluentValidation rules
+                DoctorValidator validator = new DoctorValidator();
+                validator.ValidateAndThrow(doctor);
 
+                var upsertedDoctor = new DoctorsWithoutEpisodes
+                {
+                    DoctorNumber = doctor.DoctorNumber,
+                    DoctorName = doctor.DoctorName,
+                    BirthDate = doctor.BirthDate,
+                    FirstEpisodeDate = doctor.FirstEpisodeDate,
+                    LastEpisodeDate = doctor.LastEpisodeDate
+                };
+
+                return Ok(upsertedDoctor);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
     }
 }
