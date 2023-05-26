@@ -35,6 +35,7 @@ namespace DoctorWho.Web.Controllers
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+
         [HttpPost("upsert")]
         public ActionResult<Doctor> UpsertDoctor(DoctorsWithoutEpisodes doctor)
         {

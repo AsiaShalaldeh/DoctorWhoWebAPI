@@ -1,4 +1,5 @@
 using DoctorWho.DB.Models;
+using DoctorWho.DB.Repositories;
 using DoctorWho.Web.Controllers;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +11,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DoctorWhoCoreDbContext>();
-builder.Services.AddScoped<DoctorWho.DB.Repositories.DoctorRepository>();
+builder.Services.AddScoped<DoctorRepository>();
+builder.Services.AddScoped<EpisodeRepository>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
