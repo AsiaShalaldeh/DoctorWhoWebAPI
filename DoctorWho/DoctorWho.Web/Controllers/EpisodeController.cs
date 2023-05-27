@@ -13,16 +13,19 @@ namespace DoctorWho.Web.Controllers
     {
         private readonly EpisodeRepository _episodeRepository;
         private readonly EnemyRepository _enemyRepository;
+        private readonly CompanionRepository _companionRepository;
         private readonly IMapper _mapper;
 
         public EpisodeController(EpisodeRepository episodeRepository, IMapper mapper,
-            EnemyRepository enemyRepository)
+            EnemyRepository enemyRepository, CompanionRepository companionRepository)
         {
             _episodeRepository = episodeRepository ??
                 throw new ArgumentNullException(nameof(episodeRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _enemyRepository= enemyRepository ?? 
+            _enemyRepository = enemyRepository ??
                 throw new ArgumentNullException(nameof(enemyRepository));
+            _companionRepository = companionRepository ??
+                throw new ArgumentNullException(nameof(companionRepository));
         }
 
         [HttpGet(Name = "GetAllEpisodes")]
@@ -85,6 +88,33 @@ namespace DoctorWho.Web.Controllers
                 _enemyRepository.AddEnemyToEpisode(episode, enemy);
 
                 return Ok("Enemy was Added Successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.InnerException}");
+            }
+        }
+
+        [HttpPost("{episodeId}/companions")]
+        public IActionResult AddCompanionToEpisode(int episodeId, [FromBody] CompanionDto companionDto)
+        {
+            try
+            {
+                var episode = _episodeRepository.GetEpisodeById(episodeId);
+                if (episode == null)
+                {
+                    return NotFound("Episode not found");
+                }
+
+                Companion companion = _companionRepository.GetCompanionById(companionDto.CompanionId);
+                if (companion == null)
+                {
+                    companion = _mapper.Map<Companion>(companionDto);
+                    companion = _companionRepository.CreateCompanion(companion);
+                }
+                _companionRepository.AddCompanionToEpisode(episode, companion);
+
+                return Ok("Companion was Added Successfully");
             }
             catch (Exception ex)
             {
