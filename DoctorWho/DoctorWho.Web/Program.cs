@@ -13,6 +13,7 @@ builder.Services.AddScoped<DoctorRepository>();
 builder.Services.AddScoped<EpisodeRepository>();
 builder.Services.AddScoped<EnemyRepository>();
 builder.Services.AddScoped<CompanionRepository>();
+builder.Services.AddScoped<AuthorRepository>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
